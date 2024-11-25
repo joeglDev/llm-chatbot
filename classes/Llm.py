@@ -1,4 +1,6 @@
-from langchain_core.prompts import ChatPromptTemplate
+from tempfile import template
+
+from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 from langchain_ollama.llms import OllamaLLM
 
 from Prompts import SYSTEM_PROMPT
@@ -17,6 +19,7 @@ class LLM:
         news_response = retriever.get_news(country_code=self.country_code)
 
         # Step 2: Define a prompt
+        """
         prompt_template = ChatPromptTemplate(
             [
                 ("system", SYSTEM_PROMPT),
@@ -26,10 +29,24 @@ class LLM:
                 ),
             ]
         )
+        """
+        format_instructions = ""  # placeholder for pydantic
+        prompt = PromptTemplate(
+            template="Answer the user query. \n {query}\n",
+            input_variables=["query"],
+            # partial_variables={"format_instructions": format_instructions},
+        )
+        query_template = PromptTemplate.from_template(SYSTEM_PROMPT)
+        query = query_template.format(
+            articles=news_response
+        )
 
-        prompt = prompt_template.invoke({"news_articles": news_response})
+        # prompt = prompt_template.invoke({"news_articles": news_response})
 
         # Step 3: Generate LLM response
         # TODO: format as pydantic object
-        completion: str = self.llm.invoke(prompt)
+        # TODO: to ensure that each news article is accurate send each as a single LLM prompt and response async
+        # completion: str = self.llm.invoke(prompt)
+        chain = prompt | self.llm  # parser
+        completion = chain.invoke(query)
         return completion
