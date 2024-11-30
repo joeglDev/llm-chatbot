@@ -19,17 +19,6 @@ class LLM:
         news_response = retriever.get_news(country_code=self.country_code)
 
         # Step 2: Define a prompt
-        """
-        prompt_template = ChatPromptTemplate(
-            [
-                ("system", SYSTEM_PROMPT),
-                (
-                    "user",
-                    "Please summarise the following news articles: {news_articles}",
-                ),
-            ]
-        )
-        """
         format_instructions = ""  # placeholder for pydantic
         prompt = PromptTemplate(
             template="Answer the user query. \n {query}\n",
@@ -38,7 +27,9 @@ class LLM:
         )
         query_template = PromptTemplate.from_template(SYSTEM_PROMPT)
         query = query_template.format(
-            articles=news_response
+            articles=news_response[
+                0
+            ]  # TODO: return all articles and process each as a separate async LLM call
         )
 
         # prompt = prompt_template.invoke({"news_articles": news_response})

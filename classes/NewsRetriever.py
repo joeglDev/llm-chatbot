@@ -1,29 +1,50 @@
 import os
-from typing import List
+import json
+from dataclasses import dataclass
+from typing import List, Dict
+
 
 import requests
 from dotenv import load_dotenv
-from requests import Response
 
 from classes.CountryCodes import CountryCodes
 
 
+@dataclass
+class NewsArticle:
+    id: int
+    title: str
+    text: str
+    summary: str
+    url: str
+    image: str | None
+    video: str | None
+    publish_date: str
+    author: str
+    authors: List[str]
+    sentiment: float
+    language: str
+    source_country: str
+
+
 class NewsRetriever:
+    def _convert_articles_to_dataclass(self, article: Dict) -> NewsArticle:
+        return NewsArticle(**article)
+
     def get_news(self, country_code: CountryCodes) -> str:
         load_dotenv()
         API_KEY = os.environ.get("API_KEY")
+        search_url = f"https://api.worldnewsapi.com/top-news?source-country={country_code.value}&language=en"
         headers = {"x-api-key": API_KEY}
-        url = f"https://newsapi.org/v2/top-headlines?country={country_code.value}"
 
-        res = requests.get(url, headers=headers)
+        response = requests.get(search_url, headers=headers)
+        response.raise_for_status()
 
-        # TODO: model as dataclass
-        res_as_list = res.json()
+        search_results = json.loads(response.text)
+        print(search_results)
+        raw_articles = search_results["top_news"][0]["news"]
 
-        articles = ""
-        for article in res_as_list["articles"]:
-            source = article["source"]["id"]
-            description = article["description"]
-            articles = articles + f"{source}: {description} \n"
-
-        return articles
+        converted_articles = [
+            self._convert_articles_to_dataclass(article) for article in raw_articles
+        ]
+        return converted_articles

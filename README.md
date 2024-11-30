@@ -1,9 +1,12 @@
-# llm-chatbot
-llm-chatbot
+# LLM new retriever
+
+## Summary
+
+Backend service which extracts news articles from an external api and parses through an LLM to provide opinion.
+
+- Current news api source: https://worldnewsapi.com/docs/top-news/
 
 ## todo
 - get specific news endpoint
-- comment in each news article and give link response format then assemble into a wider string -> 
 - text to speech and send audio from api
-- consider an alternative news api such as https://mediastack.com/sources/uk-news-api
-- - streaming endpoint
+- streaming endpoint
