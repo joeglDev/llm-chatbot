@@ -8,6 +8,7 @@ from tests.data.mock_llm_response import MOCK_LLM_RESPONSE
 
 # todo: integrate into llm system and return audio file NOT text using a diff endpoint
 
+
 class TextToSpeech:
     def __init__(self, tts_model: str, speaker: str, language: str):
         self.tts_model = tts_model
@@ -15,15 +16,14 @@ class TextToSpeech:
         self.language = language
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.tts = TTS(self.tts_model).to(self.device)
-        self.path = (
-                os.path.dirname(os.path.abspath(__file__)) + "/../data/output.wav"
-        )
+        self.path = os.path.dirname(os.path.abspath(__file__)) + "/../data/output.wav"
 
     def _synthesise_speech(self, completion: str):
         # Run TTS
         # ❗ Since this model is multi-lingual voice cloning model, we must set the target speaker_wav and language
         # Text to speech list of amplitude values as output
         print("Generating voice...")
+
         self.tts.tts_to_file(
             text=completion,
             file_path=self.path,
@@ -39,13 +39,24 @@ class TextToSpeech:
         playsound(self.path)
 
     def _clean_file(self):
-        os.remove(self.path)
+        try:
+            os.remove(self.path)
+        except Exception:
+            print("No preexisting audio file file to delete")
+
+    def _read_file(self) -> bytes:
+        chunk_size = 4096
+        try:
+            with open(self.path, "rb") as file:
+                while True:
+                    chunk = file.read(chunk_size)
+                    if not chunk:
+                        break
+                    yield chunk
+        except IOError as e:
+            print(f"Error reading audio file: {e}")
 
     def run(self, completion: str):
+        self._clean_file()
         self._synthesise_speech(completion)
-        self._speak()
-        # self._clean_file()
-
-
-#service = TextToSpeech(tts_model="tts_models/multilingual/multi-dataset/xtts_v2", speaker="Baldur Sanjin", language="en")
-#service.run(completion=MOCK_LLM_RESPONSE[1])
+        return self._read_file()

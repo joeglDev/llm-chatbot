@@ -49,10 +49,10 @@ class LLM:
         news_responses = retriever.get_news(
             country_code=self.country_code, topic=self.topic
         )
-        sliced_news_responses = news_responses[:2]
+        sliced_news_responses = news_responses[
+            :1
+        ]  # todo: expand slice to more articles
         print(sliced_news_responses)
 
-        completions = asyncio.run(
-            self._get_completions_async(sliced_news_responses)
-        )  # todo: expand slice to more articles
+        completions = asyncio.run(self._get_completions_async(sliced_news_responses))
         return completions
