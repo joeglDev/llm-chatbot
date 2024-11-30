@@ -4,10 +4,6 @@ import torch
 from TTS.api import TTS
 from playsound import playsound
 
-from tests.data.mock_llm_response import MOCK_LLM_RESPONSE
-
-# todo: integrate into llm system and return audio file NOT text using a diff endpoint
-
 
 class TextToSpeech:
     def __init__(self, tts_model: str, speaker: str, language: str):

@@ -50,7 +50,7 @@ class LLM:
             country_code=self.country_code, topic=self.topic
         )
         sliced_news_responses = news_responses[
-            :1
+            :4
         ]  # todo: expand slice to more articles
         print(sliced_news_responses)
 
