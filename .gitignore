@@ -2,3 +2,5 @@
 /.idea
 __pycache__
 Prompts.py
+
+mock_news_response.json

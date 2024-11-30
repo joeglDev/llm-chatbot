@@ -20,8 +20,8 @@ def ping():
 
 
 @app.get("/news")
-def get_news(country_code: CountryCodes):
-    llm = LLM(model="mistral", country_code=country_code)
+def get_news(country_code: CountryCodes, topic: str):
+    llm = LLM(model="mistral", country_code=country_code, topic=topic)
     completion = llm.get_completion()
     response = GetNewsResponse(text_summary=completion)
     return response

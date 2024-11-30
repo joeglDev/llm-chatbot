@@ -14,27 +14,30 @@ class NewsArticle:
     id: int
     title: str
     text: str
-    summary: str
     url: str
     image: str | None
     video: str | None
     publish_date: str
     author: str
-    authors: List[str]
     sentiment: float
     language: str
     source_country: str
     category: Optional[str] = None
+    summary: Optional[str] = None
+    authors: Optional[List[str]] = None
 
 
 class NewsRetriever:
     def _convert_articles_to_dataclass(self, article: Dict) -> NewsArticle:
         return NewsArticle(**article)
 
-    def get_news(self, country_code: CountryCodes) -> List[NewsArticle]:
+    def get_news(self, country_code: CountryCodes, topic: str) -> List[NewsArticle]:
         load_dotenv()
         API_KEY = os.environ.get("API_KEY")
-        search_url = f"https://api.worldnewsapi.com/search-news?text=climate+change&source-country={country_code.value}&language=en" #todo: add a topic
+
+        news_topic = "+".join(topic.split(" "))
+        search_url = f"https://api.worldnewsapi.com/search-news?text={news_topic}&source-country={country_code.value}&language=en"
+        print(f"search: {search_url}")
         headers = {"x-api-key": API_KEY}
 
         response = requests.get(search_url, headers=headers)
