@@ -6,7 +6,7 @@ from fastapi.responses import StreamingResponse
 
 from classes.CountryCodes import CountryCodes
 from classes.Llm import LLM
-from classes.TextToSpeech import TextToSpeech
+from classes.text_to_speech.TextToSpeech import TextToSpeech
 
 
 @dataclass

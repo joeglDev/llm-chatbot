@@ -5,12 +5,13 @@ import torch
 from playsound import playsound
 from tortoise import api
 import torchaudio
-
-from classes.utils import audio
+from tortoise.utils import audio
 
 
 class TextToSpeech:
-    def __init__(self, voice: str, sample_rate: int, sample_rate_reference: int): # voice = folder name
+    def __init__(
+        self, voice: str, sample_rate: int, sample_rate_reference: int
+    ):  # voice = folder name
         self.tts = api.TextToSpeech(
             device="cuda" if torch.cuda.is_available() else "cpu"
         )
@@ -33,8 +34,12 @@ class TextToSpeech:
             print("No preexisting audio file file to delete")
 
     def _generate_audio(self):
-        clips_paths = self._get_audio_file_paths(self.voice) #todo: find khajit audio samples
-        ref_clips = [audio.load_audio(p, self.sample_rate_reference) for p in clips_paths]
+        clips_paths = self._get_audio_file_paths(
+            self.voice
+        )  # todo: find khajit audio samples
+        ref_clips = [
+            audio.load_audio(p, self.sample_rate_reference) for p in clips_paths
+        ]
         audio_tensors = self.tts.tts_with_preset(
             "Hello there. My name is Captain Jean Luq Picard.",
             preset="ultra_fast",
@@ -50,4 +55,4 @@ class TextToSpeech:
         self._generate_audio()
 
 
-TextToSpeech(voice="pat", sample_rate=22_500, sample_rate_reference = 22_050).run()
+TextToSpeech(voice="pat", sample_rate=22_500, sample_rate_reference=22_050).run()
