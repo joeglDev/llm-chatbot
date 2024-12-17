@@ -7,15 +7,21 @@ from tortoise import api
 import torchaudio
 from tortoise.utils import audio
 
+from Prompts import TEST_AUDIO
 
+
+# todo: refine training clips
 class TextToSpeech:
     def __init__(
         self, voice: str, sample_rate: int, sample_rate_reference: int
     ):  # voice = folder name
         self.tts = api.TextToSpeech(
-            device="cuda" if torch.cuda.is_available() else "cpu"
+            device="cuda" if torch.cuda.is_available() else "cpu",
+            use_deepspeed=False,
+            kv_cache=True,
+            half=True,
         )
-        self.path = os.path.dirname(os.path.abspath(__file__)) + "/../data/output.wav"
+        self.path = os.path.dirname(os.path.abspath(__file__)) + "/data/output.wav"
         self.voice = os.path.dirname(os.path.abspath(__file__)) + f"/voices/{voice}"
         self.sample_rate = sample_rate
         self.sample_rate_reference = sample_rate_reference
@@ -34,25 +40,27 @@ class TextToSpeech:
             print("No preexisting audio file file to delete")
 
     def _generate_audio(self):
-        clips_paths = self._get_audio_file_paths(
-            self.voice
-        )  # todo: find khajit audio samples
+        clips_paths = self._get_audio_file_paths(self.voice)
         ref_clips = [
             audio.load_audio(p, self.sample_rate_reference) for p in clips_paths
         ]
         audio_tensors = self.tts.tts_with_preset(
-            "Hello there. My name is Captain Jean Luq Picard.",
+            text=TEST_AUDIO,
             preset="ultra_fast",
             voice_samples=ref_clips,
         )
         torchaudio.save(
             src=audio_tensors[0], uri=self.path, sample_rate=self.sample_rate
         )  # try 20,000 and 25,000
-        playsound(self.path)
 
     def run(self):
+        print(f"Device: {'cuda' if torch.cuda.is_available() else 'cpu'}")
         self._clean_temp_files()
         self._generate_audio()
 
+        playsound(self.path)
 
-TextToSpeech(voice="pat", sample_rate=22_500, sample_rate_reference=22_050).run()
+
+TextToSpeech(
+    voice="khajiit-male", sample_rate=22_200, sample_rate_reference=22_050  # 44100
+).run()

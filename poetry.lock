@@ -834,14 +834,6 @@ optional = false
 python-versions = "*"
 
 [[package]]
-name = "pycairo"
-version = "1.27.0"
-description = "Python interface for cairo"
-category = "main"
-optional = false
-python-versions = ">=3.9"
-
-[[package]]
 name = "pycparser"
 version = "2.22"
 description = "C parser in Python"
@@ -887,17 +879,6 @@ python-versions = ">=3.8"
 
 [package.extras]
 windows-terminal = ["colorama (>=0.4.6)"]
-
-[[package]]
-name = "pygobject"
-version = "3.50.0"
-description = "Python bindings for GObject Introspection"
-category = "main"
-optional = false
-python-versions = "<4.0,>=3.9"
-
-[package.dependencies]
-pycairo = ">=1.16"
 
 [[package]]
 name = "python-dotenv"
@@ -1477,7 +1458,7 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.9,<3.12"
-content-hash = "cbdbab086c3d2a67e9c915d7972feac8bda2b133fcd9b7af6fc6d922327f05a2"
+content-hash = "60cc3f92d7fdc158f1c8f254f006ce29a7764ffb50898c21fe3e74d462cfb7a6"
 
 [metadata.files]
 annotated-types = []
@@ -1546,12 +1527,10 @@ platformdirs = []
 playsound = []
 pooch = []
 progressbar = []
-pycairo = []
 pycparser = []
 pydantic = []
 pydantic-core = []
 pygments = []
-pygobject = []
 python-dotenv = []
 python-multipart = []
 pyyaml = []
