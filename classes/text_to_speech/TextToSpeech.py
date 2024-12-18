@@ -12,7 +12,7 @@ class TextToSpeech:
         self.language = language
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.tts = TTS(self.tts_model).to(self.device)
-        self.path = os.path.dirname(os.path.abspath(__file__)) + "/../data/output.wav"
+        self.path = os.path.dirname(os.path.abspath(__file__)) + "/data/output.wav"
 
     def _synthesise_speech(self, completion: str):
         # Run TTS
